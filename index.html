@@ -10,9 +10,35 @@
         background-color: black;
         overflow: hidden;
       }
+      iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+      #back {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100px;
+        height: 100px;
+        opacity: 0;
+        transition: 0.5s;
+      }
+      #back:hover {
+        cursor: pointer;
+        background-color: red;
+        opacity: 0.1;
+        transition: 0.5s;
+      }
     </style>
   </head>
   <body>
+    <iframe id="iframe" src="" frameborder="0"></iframe>
+    <div id="back"></div>
+
     <?xml version="1.0" encoding="UTF-8" standalone="no"?>
     <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
     <svg
@@ -123,9 +149,27 @@
 
     <script>
       var paths = document.querySelectorAll("path");
-      paths[0].addEventListener("click", function () {
-        window.location.href = "https://galaxy.ralf-boltshauser.com/";
-        paths[0].remove();
+      var links = [
+        "https://www.meteoswiss.admin.ch/home.html?tab=overview",
+        "https://www.watson.ch/",
+        "https://galaxy.ralf-boltshauser.com/",
+        "https://portal.ralf-boltshauser.com/",
+      ];
+      var iframe = document.querySelector("#iframe");
+      var back = document.querySelector("#back");
+      back.addEventListener("click", function () {
+        iframe.src = "";
+        iframe.style.opacity = 0;
+        iframe.style.pointerEvents = "none";
+      });
+      iframe.style.opacity = 0;
+      links.forEach(function (link, i) {
+        paths[i].style.cursor = "pointer";
+        paths[i].addEventListener("click", function () {
+          iframe.src = link;
+          iframe.style.opacity = 1;
+          iframe.style.pointerEvents = "all";
+        });
       });
       var length = paths.length;
       var i = 0;
