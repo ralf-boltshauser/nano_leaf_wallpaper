@@ -148,6 +148,9 @@
     </svg>
 
     <script>
+      var apiBase =
+        "http://192.168.0.178/api/0KW8MKn4nVwzHSJJ8pCFZAjZbEBaoRUcsX0g64YV/";
+
       var paths = document.querySelectorAll("path");
       var links = [
         "https://www.meteoswiss.admin.ch/home.html?tab=overview",
@@ -155,8 +158,12 @@
         "https://galaxy.ralf-boltshauser.com/",
         "https://portal.ralf-boltshauser.com/",
       ];
+      var functionCalls = [toggleLights];
+      var lightsOn = false;
+      var lightsIds = [];
       var iframe = document.querySelector("#iframe");
       var back = document.querySelector("#back");
+
       back.addEventListener("click", function () {
         iframe.src = "";
         iframe.style.opacity = 0;
@@ -171,6 +178,49 @@
           iframe.style.pointerEvents = "all";
         });
       });
+
+      function toggleLights() {
+        lightsIds = [];
+        fetch(apiBase + "lights")
+          .then((response) => response.json())
+          .then((data) => {
+            Object.keys(data).forEach((light) => {
+              var lightObject = data[light];
+              if (lightObject.name.includes("Ralf")) {
+                lightsIds.push(light);
+              }
+            });
+
+            var lightApiCalls = [];
+            lightsIds.forEach((lightId) => {
+              lightApiCalls.push({
+                url: "lights/" + lightId + "/state",
+                method: "PUT",
+                body: { on: !lightsOn },
+              });
+            });
+            lightsOn = !lightsOn;
+            lightApiCalls.forEach((apiCall) => {
+              fetch(apiBase + apiCall.url, {
+                method: apiCall.method,
+                body: JSON.stringify(apiCall.body),
+              });
+            });
+            console.log("Toggle lights: ", Object.values(data).length);
+          });
+      }
+
+      function setUpFunctionCalls() {
+        functionCalls.forEach(function (functionCall, i) {
+          paths[i + links.length].addEventListener("click", function () {
+            functionCall();
+          });
+        });
+      }
+
+      toggleLights();
+      setUpFunctionCalls();
+
       var length = paths.length;
       var i = 0;
       var types = [
@@ -206,6 +256,9 @@
         }
         if (pair[0] == "changeAmount") {
           changeAmount = pair[1];
+        }
+        if (pair[0] == "apiBase") {
+          apiBase = pair[1];
         }
       }
       colors = [
