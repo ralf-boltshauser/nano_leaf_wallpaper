@@ -125,6 +125,7 @@
       var paths = document.querySelectorAll("path");
       paths[0].addEventListener("click", function() {
         window.open("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+        paths[0].remove();
       });
       var length = paths.length;
       var i = 0;
