@@ -158,9 +158,10 @@
         "https://galaxy.ralf-boltshauser.com/",
         "https://portal.ralf-boltshauser.com/",
       ];
-      var functionCalls = [toggleLights];
+      var functionCalls = [toggleLights, setLightColor, syncLights];
       var lightsOn = false;
       var lightsIds = [];
+
       var iframe = document.querySelector("#iframe");
       var back = document.querySelector("#back");
 
@@ -178,8 +179,7 @@
           iframe.style.pointerEvents = "all";
         });
       });
-
-      function toggleLights() {
+      function setupLightIds() {
         lightsIds = [];
         fetch(apiBase + "lights")
           .then((response) => response.json())
@@ -190,13 +190,32 @@
                 lightsIds.push(light);
               }
             });
+          });
+      }
 
+      var syncLightsInterval;
+      function syncLights(panelId) {
+        console.log("interval: ", syncLightsInterval);
+        if (syncLightsInterval !== undefined) {
+          clearInterval(syncLightsInterval);
+          syncLightsInterval = undefined;
+          paths[panelId].style.opacity = "1";
+        } else {
+          syncLightsInterval = setInterval(function () {
             var lightApiCalls = [];
-            lightsIds.forEach((lightId) => {
+            lightsIds.forEach((lightId, index) => {
+              var color = colors[index];
+              var hsv = RGBtoHSV(color.r, color.g, color.b);
               lightApiCalls.push({
                 url: "lights/" + lightId + "/state",
                 method: "PUT",
-                body: { on: !lightsOn },
+                body: {
+                  on: true,
+                  hue: Math.floor(hsv.h * 65535),
+                  sat: Math.floor(hsv.s * 254),
+                  bri: Math.floor(hsv.v * 254),
+                  transitiontime: 10,
+                },
               });
             });
             lightsOn = !lightsOn;
@@ -206,21 +225,65 @@
                 body: JSON.stringify(apiCall.body),
               });
             });
-            console.log("Toggle lights: ", Object.values(data).length);
+          }, 2000);
+          paths[panelId].style.opacity = "0.5";
+        }
+      }
+
+      function setLightColor(panelId) {
+        console.log(panelId);
+        var color = colors[panelId];
+        console.log(color);
+        var hue = Math.floor(RGBtoHSV(color.r, color.g, color.b).h * 65535);
+        console.log(hue);
+        var lightApiCalls = [];
+        lightsIds.forEach((lightId) => {
+          lightApiCalls.push({
+            url: "lights/" + lightId + "/state",
+            method: "PUT",
+            body: { on: true, hue: hue, sat: 254, transitiontime: 1 },
           });
+        });
+        lightsOn = !lightsOn;
+        lightApiCalls.forEach((apiCall) => {
+          fetch(apiBase + apiCall.url, {
+            method: apiCall.method,
+            body: JSON.stringify(apiCall.body),
+          });
+        });
+        console.log("Toggle lights: ", lightsIds.length);
+      }
+
+      function toggleLights(panelId) {
+        var lightApiCalls = [];
+        lightsIds.forEach((lightId) => {
+          lightApiCalls.push({
+            url: "lights/" + lightId + "/state",
+            method: "PUT",
+            body: { on: !lightsOn },
+          });
+        });
+        lightsOn = !lightsOn;
+        lightApiCalls.forEach((apiCall) => {
+          fetch(apiBase + apiCall.url, {
+            method: apiCall.method,
+            body: JSON.stringify(apiCall.body),
+          });
+        });
+        console.log("Toggle lights: ", lightsIds.length);
       }
 
       function setUpFunctionCalls() {
         functionCalls.forEach(function (functionCall, i) {
           paths[i + links.length].addEventListener("click", function () {
-            functionCall();
+            functionCall(i + links.length);
           });
           paths[i + links.length].style.cursor = "pointer";
         });
       }
-
+      setupLightIds();
       toggleLights();
-      setUpFunctionCalls();
+      setTimeout(setUpFunctionCalls, 1000);
 
       var length = paths.length;
       var i = 0;
@@ -510,6 +573,79 @@
           newColor.b = newColor.b + changeAmount;
         }
         return newColor;
+      }
+
+      // color converting functions
+      function RGBtoHSV(r, g, b) {
+        if (arguments.length === 1) {
+          (g = r.g), (b = r.b), (r = r.r);
+        }
+        var max = Math.max(r, g, b),
+          min = Math.min(r, g, b),
+          d = max - min,
+          h,
+          s = max === 0 ? 0 : d / max,
+          v = max / 255;
+
+        switch (max) {
+          case min:
+            h = 0;
+            break;
+          case r:
+            h = g - b + d * (g < b ? 6 : 0);
+            h /= 6 * d;
+            break;
+          case g:
+            h = b - r + d * 2;
+            h /= 6 * d;
+            break;
+          case b:
+            h = r - g + d * 4;
+            h /= 6 * d;
+            break;
+        }
+
+        return {
+          h: h,
+          s: s,
+          v: v,
+        };
+      }
+      function HSVtoHSL(h, s, v) {
+        if (arguments.length === 1) {
+          (s = h.s), (v = h.v), (h = h.h);
+        }
+        var _h = h,
+          _s = s * v,
+          _l = (2 - s) * v;
+        _s /= _l <= 1 ? _l : 2 - _l;
+        _l /= 2;
+
+        return {
+          h: _h,
+          s: _s,
+          l: _l,
+        };
+      }
+
+      function HSLtoHSV(h, s, l) {
+        if (arguments.length === 1) {
+          (s = h.s), (l = h.l), (h = h.h);
+        }
+        var _h = h,
+          _s,
+          _v;
+
+        l *= 2;
+        s *= l <= 1 ? l : 2 - l;
+        _v = (l + s) / 2;
+        _s = (2 * s) / (l + s);
+
+        return {
+          h: _h,
+          s: _s,
+          v: _v,
+        };
       }
 
       draw();
