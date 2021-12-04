@@ -8,6 +8,7 @@
     <style>
       body {
         background-color: black;
+        overflow: hidden;
       }
     </style>
   </head>
@@ -17,7 +18,6 @@
     <svg
       width="100%"
       height="100%"
-      
       viewBox="0 0 1920 1080"
       version="1.1"
       xmlns="http://www.w3.org/2000/svg"
@@ -30,7 +30,7 @@
         stroke-linecap: round;
         stroke-linejoin: round;
         stroke-miterlimit: 1.5;
-        max-height: 100vh; 
+        max-height: 100vh;
       "
     >
       <g transform="matrix(0.731864,0,0,0.731864,38.3101,-192.852)">
@@ -139,6 +139,8 @@
       var typeFixed = false;
       var typeChangeSpeed = 1;
       var updateSpeed = 1; // 1 = 1 millisecond
+      var changeAmount = 10;
+
       // get query param type
       var query = window.location.search.substring(1);
       var vars = query.split("&");
@@ -153,6 +155,9 @@
         }
         if (pair[0] == "updateSpeed") {
           updateSpeed = pair[1];
+        }
+        if (pair[0] == "changeAmount") {
+          changeAmount = pair[1];
         }
       }
       colors = [
@@ -235,121 +240,148 @@
         var newColor = { r: 0, g: 0, b: 0 };
         switch (type) {
           case "blue":
-            newColor.r = Math.floor((Math.random() - 0.5) * 10) + oldColor.r;
-            newColor.g = Math.floor((Math.random() - 0.5) * 10) + oldColor.g;
-            newColor.b = Math.floor((Math.random() - 0.5) * 10) + oldColor.b;
+            newColor.r =
+              Math.floor((Math.random() - 0.5) * changeAmount) + oldColor.r;
+            newColor.g =
+              Math.floor((Math.random() - 0.5) * changeAmount) + oldColor.g;
+            newColor.b =
+              Math.floor((Math.random() - 0.5) * changeAmount) + oldColor.b;
             if (newColor.b < 200) {
-              newColor.b += 10;
+              newColor.b += changeAmount;
             }
             if (newColor.r > 150) {
-              newColor.r -= 10;
+              newColor.r -= changeAmount;
             }
             if (newColor.g > 150) {
-              newColor.g -= 10;
+              newColor.g -= changeAmount;
             }
             break;
           case "red":
-            newColor.r = Math.floor((Math.random() - 0.5) * 10) + oldColor.r;
-            newColor.g = Math.floor((Math.random() - 0.5) * 10) + oldColor.g;
-            newColor.b = Math.floor((Math.random() - 0.5) * 10) + oldColor.b;
+            newColor.r =
+              Math.floor((Math.random() - 0.5) * changeAmount) + oldColor.r;
+            newColor.g =
+              Math.floor((Math.random() - 0.5) * changeAmount) + oldColor.g;
+            newColor.b =
+              Math.floor((Math.random() - 0.5) * changeAmount) + oldColor.b;
             if (newColor.r < 200) {
-              newColor.r += 10;
+              newColor.r += changeAmount;
             }
             if (newColor.g > 150) {
-              newColor.g -= 10;
+              newColor.g -= changeAmount;
             }
             if (newColor.b > 150) {
-              newColor.b -= 10;
+              newColor.b -= changeAmount;
             }
             break;
           case "green":
-            newColor.r = Math.floor((Math.random() - 0.5) * 10) + oldColor.r;
-            newColor.g = Math.floor((Math.random() - 0.5) * 10) + oldColor.g;
-            newColor.b = Math.floor((Math.random() - 0.5) * 10) + oldColor.b;
+            newColor.r =
+              Math.floor((Math.random() - 0.5) * changeAmount) + oldColor.r;
+            newColor.g =
+              Math.floor((Math.random() - 0.5) * changeAmount) + oldColor.g;
+            newColor.b =
+              Math.floor((Math.random() - 0.5) * changeAmount) + oldColor.b;
             if (newColor.g < 200) {
-              newColor.g += 10;
+              newColor.g += changeAmount;
             }
             if (newColor.r > 150) {
-              newColor.r -= 10;
+              newColor.r -= changeAmount;
             }
             if (newColor.b > 150) {
-              newColor.b -= 10;
+              newColor.b -= changeAmount;
             }
             break;
           case "purple":
-            newColor.r = Math.floor((Math.random() - 0.5) * 10) + oldColor.r;
-            newColor.g = Math.floor((Math.random() - 0.5) * 10) + oldColor.g;
-            newColor.b = Math.floor((Math.random() - 0.5) * 10) + oldColor.b;
+            newColor.r =
+              Math.floor((Math.random() - 0.5) * changeAmount) + oldColor.r;
+            newColor.g =
+              Math.floor((Math.random() - 0.5) * changeAmount) + oldColor.g;
+            newColor.b =
+              Math.floor((Math.random() - 0.5) * changeAmount) + oldColor.b;
             if (newColor.r < 200) {
-              newColor.r += 10;
+              newColor.r += changeAmount;
             }
             if (newColor.g > 150) {
-              newColor.g -= 10;
+              newColor.g -= changeAmount;
             }
             if (newColor.b < 200) {
-              newColor.b += 10;
+              newColor.b += changeAmount;
             }
             break;
           case "yellow":
-            newColor.r = Math.floor((Math.random() - 0.5) * 10) + oldColor.r;
-            newColor.g = Math.floor((Math.random() - 0.5) * 10) + oldColor.g;
-            newColor.b = Math.floor((Math.random() - 0.5) * 10) + oldColor.b;
+            newColor.r =
+              Math.floor((Math.random() - 0.5) * changeAmount) + oldColor.r;
+            newColor.g =
+              Math.floor((Math.random() - 0.5) * changeAmount) + oldColor.g;
+            newColor.b =
+              Math.floor((Math.random() - 0.5) * changeAmount) + oldColor.b;
             if (newColor.r < 200) {
-              newColor.r += 10;
+              newColor.r += changeAmount;
             }
             if (newColor.g < 200) {
-              newColor.g += 10;
+              newColor.g += changeAmount;
             }
             if (newColor.b > 150) {
-              newColor.b -= 10;
+              newColor.b -= changeAmount;
             }
             break;
           case "pink":
-            newColor.r = Math.floor((Math.random() - 0.5) * 10) + oldColor.r;
-            newColor.g = Math.floor((Math.random() - 0.5) * 10) + oldColor.g;
-            newColor.b = Math.floor((Math.random() - 0.5) * 10) + oldColor.b;
+            newColor.r =
+              Math.floor((Math.random() - 0.5) * changeAmount) + oldColor.r;
+            newColor.g =
+              Math.floor((Math.random() - 0.5) * changeAmount) + oldColor.g;
+            newColor.b =
+              Math.floor((Math.random() - 0.5) * changeAmount) + oldColor.b;
             if (newColor.r < 200) {
-              newColor.r += 10;
+              newColor.r += changeAmount;
             }
             if (newColor.g < 200) {
-              newColor.g += 10;
+              newColor.g += changeAmount;
             }
             if (newColor.b < 200) {
-              newColor.b += 10;
+              newColor.b += changeAmount;
             }
             break;
           case "black":
-            newColor.r = Math.floor((Math.random() - 0.5) * 10) + oldColor.r;
-            newColor.g = Math.floor((Math.random() - 0.5) * 10) + oldColor.g;
-            newColor.b = Math.floor((Math.random() - 0.5) * 10) + oldColor.b;
+            newColor.r =
+              Math.floor((Math.random() - 0.5) * changeAmount) + oldColor.r;
+            newColor.g =
+              Math.floor((Math.random() - 0.5) * changeAmount) + oldColor.g;
+            newColor.b =
+              Math.floor((Math.random() - 0.5) * changeAmount) + oldColor.b;
             if (newColor.r > 150) {
-              newColor.r -= 10;
+              newColor.r -= changeAmount;
             }
             if (newColor.g > 150) {
-              newColor.g -= 10;
+              newColor.g -= changeAmount;
             }
             if (newColor.b > 150) {
-              newColor.b -= 10;
+              newColor.b -= changeAmount;
             }
             break;
           case "white":
-            newColor.r = Math.floor((Math.random() - 0.5) * 10) + oldColor.r;
-            newColor.g = Math.floor((Math.random() - 0.5) * 10) + oldColor.g;
-            newColor.b = Math.floor((Math.random() - 0.5) * 10) + oldColor.b;
+            newColor.r =
+              Math.floor((Math.random() - 0.5) * changeAmount) + oldColor.r;
+            newColor.g =
+              Math.floor((Math.random() - 0.5) * changeAmount) + oldColor.g;
+            newColor.b =
+              Math.floor((Math.random() - 0.5) * changeAmount) + oldColor.b;
             if (newColor.r < 200) {
-              newColor.r += 10;
+              newColor.r += changeAmount;
             }
             if (newColor.g < 200) {
-              newColor.g += 10;
+              newColor.g += changeAmount;
             }
             if (newColor.b < 200) {
-              newColor.b += 10;
+              newColor.b += changeAmount;
             }
             break;
           default:
-            newColor.r = Math.floor((Math.random() - 0.5) * 10) + oldColor.r;
-            newColor.g = Math.floor((Math.random() - 0.5) * 10) + oldColor.g;
-            newColor.b = Math.floor((Math.random() - 0.5) * 10) + oldColor.b;
+            newColor.r =
+              Math.floor((Math.random() - 0.5) * changeAmount) + oldColor.r;
+            newColor.g =
+              Math.floor((Math.random() - 0.5) * changeAmount) + oldColor.g;
+            newColor.b =
+              Math.floor((Math.random() - 0.5) * changeAmount) + oldColor.b;
             break;
         }
         if (newColor.r > 255) {
@@ -371,9 +403,9 @@
           newColor.b = 0;
         }
         if (newColor.r + newColor.g + newColor.b < 250) {
-          newColor.r = newColor.r + 10;
-          newColor.g = newColor.g + 10;
-          newColor.b = newColor.b + 10;
+          newColor.r = newColor.r + changeAmount;
+          newColor.g = newColor.g + changeAmount;
+          newColor.b = newColor.b + changeAmount;
         }
         return newColor;
       }
